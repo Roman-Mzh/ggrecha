@@ -4,6 +4,7 @@ import TelegramBot from 'node-telegram-bot-api';
 import dotenv from 'dotenv';
 
 import { Follow } from '../models';
+import tap from './index';
 
 dotenv.config();
 
@@ -47,7 +48,8 @@ bot.onText(/\/last (.*)/, ({ chat: { id } }, match) => {
 bot.onText(/\/following/, ({ chat: { id } }) => {
   Follow.findAll({ where: { chatId: id } })
     .then(followings => {
-      const list = followings.map(e => `${e.tapUsername} (${e.tgUsername || '-'})`).join(', ');
+      const list = followings.length ? followings.map(e => `${e.tapUsername} (${e.tgUsername || '-'})`).join(', ') :
+      'кажется, подписок нет. возможно, нужно подписаться на zhigulevskoe?';
       bot.sendMessage(id, list);
     })
 })
@@ -82,6 +84,8 @@ const follow = async (id, [tapUsername, tg]) => {
     bot.sendMessage(id, e);
   }
 }
+
+// bot.sendMessage(-238934789, 'я же не яндех -.-')
 
 bot.on('message', (msg) => {
   console.log(msg)
