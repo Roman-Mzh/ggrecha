@@ -1,0 +1,35 @@
+{
+  "name": "ggrecha",
+  "version": "0.0.1",
+  "description": "grecha bot :>",
+  "main": "index.js",
+  "author": "MRM",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@babel/cli": "^7.6.4",
+    "@babel/core": "^7.6.4",
+    "@babel/node": "^7.6.3",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/preset-env": "^7.6.3",
+    "add": "^2.0.6",
+    "core-js": "3",
+    "dotenv": "^8.2.0",
+    "jsdom": "^15.2.0",
+    "moment": "^2.24.0",
+    "mysql": "^2.17.1",
+    "mysql2": "^2.0.0",
+    "node-fetch": "^2.6.0",
+    "node-telegram-bot-api": "^0.40.0",
+    "sequelize": "^5.21.2",
+    "sequelize-cli": "^5.5.1",
+    "socks5-https-client": "^1.2.1",
+    "unique-random-array": "^2.0.0"
+  },
+  "devDependencies": {
+    "babel-watch": "^7.0.0"
+  },
+  "scripts": {
+    "start": "babel-watch src/index.js"
+  }
+}
