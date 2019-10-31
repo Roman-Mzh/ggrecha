@@ -22,6 +22,7 @@
     "node-fetch": "^2.6.0",
     "node-telegram-bot-api": "^0.40.0",
     "sequelize": "^5.21.2",
+    
     "sequelize-cli": "^5.5.1",
     "socks5-https-client": "^1.2.1",
     "unique-random-array": "^2.0.0"
@@ -30,6 +31,7 @@
     "babel-watch": "^7.0.0"
   },
   "scripts": {
-    "start": "babel-watch src/index.js"
+    "start": "babel-watch src/index.js",
+    "build": "babel src/ -d dist/"
   }
 }

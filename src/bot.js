@@ -3,7 +3,7 @@ import Agent from 'socks5-https-client/lib/Agent';
 import TelegramBot from 'node-telegram-bot-api';
 import dotenv from 'dotenv';
 
-import { Follow } from '../models';
+import { Follow } from './models';
 import tap from './index';
 
 dotenv.config();

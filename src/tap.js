@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import jsdom from 'jsdom';
 
 import bot from './bot';
-import { Checkin, Follow } from '../models';
+import { Checkin, Follow } from './models';
 
 class Tap {
   async syncAll() {
