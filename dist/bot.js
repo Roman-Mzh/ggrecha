@@ -21,7 +21,7 @@ var _dotenv = _interopRequireDefault(require("dotenv"));
 
 var _models = require("./models");
 
-var _index = _interopRequireDefault(require("./index"));
+var _index = require("./index");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68,7 +68,7 @@ bot.onText(/\/last (.*)/, (_ref2, match) => {
   } = _ref2;
   const username = match[1];
 
-  _index.default.checkLast(id, username);
+  _index.tap.checkLast(id, username);
 });
 bot.onText(/\/following/, (_ref3) => {
   let {
@@ -127,7 +127,7 @@ const follow = async (id, _ref5) => {
       tgUsername: tg
     }));
 
-    _index.default.syncOne(tapUsername);
+    _index.tap.syncOne(tapUsername);
 
     bot.sendMessage(id, "\u043E\u0442\u043B\u0438\u0447\u043D\u043E! \u0436\u0434\u0451\u043C, \u043F\u043E\u043A\u0430 ".concat(tapUsername, " \u0437\u0430\u0447\u0435\u043A\u0438\u043D\u0438\u0442 \u043F\u0438\u0432\u043E!"));
   } catch (e) {

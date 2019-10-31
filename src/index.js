@@ -1,10 +1,16 @@
 import Tap from './tap';
+import debug from 'debug';
+
 
 const tap = new Tap;
+const appLog = debug('app');
+appLog('lets start!');
 
 setInterval(() => {
-  // tap.syncAll();
-  // tap.notifyAll();
+  appLog('lets sync!');
+  tap.syncAll();
+  appLog('lets notify!');
+  tap.notifyAll();
 }, 120000);
 
-export default tap;
+export { tap, appLog };
