@@ -1,7 +1,7 @@
 import Tap from './tap';
 
 const tap = new Tap;
-setTimeout(() => {
+setInterval(() => {
   tap.syncAll();
+  tap.notifyAll();
 }, 120000);
-tap.notifyAll();
