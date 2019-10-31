@@ -9,5 +9,16 @@
       "collate": "utf8_general_ci", 
       "timestamps": true
     }
+  },
+  "production": {
+    "host": "178.62.200.15",
+    "dialect": "mysql",
+    "operatorsAliases": false,
+    "logging": false,
+    "define": {
+      "charset": "utf8",
+      "collate": "utf8_general_ci", 
+      "timestamps": true
+    }
   }
 }

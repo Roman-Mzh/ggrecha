@@ -11,7 +11,7 @@
     }
   },
   "production": {
-    "host": "127.0.0.1",
+    "host": "178.62.200.15",
     "dialect": "mysql",
     "operatorsAliases": false,
     "logging": false,
