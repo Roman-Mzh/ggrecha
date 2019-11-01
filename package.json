@@ -34,6 +34,6 @@
     "start": "DEBUG=app babel-watch index.js",
     "build": "babel src/ -d dist/  --copy-files",
     "prod": "node dist/index.js",
-    "pm": "pm2 start --interpreter babel-node index.js --watch --name grecha"
+    "pm": "pm2 start --interpreter babel-node index.js --watch --name ggrecha"
   }
 }
