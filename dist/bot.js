@@ -32,6 +32,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 _dotenv.default.config();
 
 const botProcess = tap => {
+  console.log("bot is connecting to ".concat(process.env.TG_TOKEN));
   const bot = new _nodeTelegramBotApi.default(process.env.TG_TOKEN, {
     polling: true,
     request: {

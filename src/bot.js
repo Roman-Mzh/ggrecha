@@ -9,6 +9,8 @@ dotenv.config();
 
 const botProcess = (tap) => {
 
+  console.log(`bot is connecting to ${process.env.TG_TOKEN}`);
+
   const bot = new TelegramBot(process.env.TG_TOKEN, {
     polling: true,
     request: {
