@@ -8,3 +8,5 @@ if (env === 'development') {
 } else {
   ggrecha = require('./dist/index').default(appLog);
 }
+
+console.log(ggrecha)
