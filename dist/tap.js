@@ -135,7 +135,7 @@ async function parseBeers(username) {
       }
     } = item;
     const text = item.querySelector('.text');
-    const rating = item.querySelector('[data-rating]').dataset.rating;
+    const rating = ((item.querySelector('[data-rating]') || {}).dataset || {}).rating;
     const date = item.querySelector('a[data-href=":feed/viewcheckindate"]');
     const checkinData = {
       tapUsername: username,
