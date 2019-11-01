@@ -1,16 +1,11 @@
 import Tap from './tap';
-import debug from 'debug';
+import botProcess from './bot';
+
+const app = () => {
+  const tap = new Tap;
+  const bot = botProcess(tap);
+  return { tap, bot };
+};
 
 
-const tap = new Tap;
-const appLog = debug('app');
-appLog('lets start!');
-
-setInterval(() => {
-  appLog('lets sync!');
-  tap.syncAll();
-  appLog('lets notify!');
-  tap.notifyAll();
-}, 120000);
-
-export { tap, appLog };
+export default app;

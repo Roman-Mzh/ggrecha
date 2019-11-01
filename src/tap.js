@@ -6,6 +6,27 @@ import bot from './bot';
 import { Checkin, Follow } from './models';
 
 class Tap {
+  constructor() {
+    this.start();
+  }
+
+  start() {
+    this.worker = setInterval(() => {
+      this.syncAll();
+      this.notifyAll();
+    }, 120000);
+    return this.worker;
+  }
+
+  stop() {
+    if(this.isOnline) clearInterval(this.worker);
+  }
+
+  isOnline() {
+    return !!this.worker;
+  }
+
+
   async syncAll() {
     Follow.findAll().then(follows => {
       const parses = new Set(follows.map(e => e.tapUsername));

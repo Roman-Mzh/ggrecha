@@ -31,9 +31,9 @@
     "babel-watch": "^7.0.0"
   },
   "scripts": {
-    "start": "DEBUG=app babel-watch src/index.js",
+    "start": "DEBUG=app babel-watch index.js",
     "build": "babel src/ -d dist/  --copy-files",
     "prod": "node dist/index.js",
-    "pm": "pm2 start dist/index.js --name grecha"
+    "pm": "pm2 start --interpreter babel-node index.js --watch --name grecha"
   }
 }
