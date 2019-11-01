@@ -45,36 +45,44 @@ const botProcess = tap => {
       }
     }
   });
-  bot.onText(/\/help/, msg => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(chatId, "\n    commands:\n  <pre>/follow untappdUsername [telegramUsername]</pre> follow untappd user. If telegramUsername is specified, will tag this username on checkin!\n\n  <pre>/following</pre> display a list of following untappd users for this channel\n\n  <pre>/unfollow untappdUsername</pre> stop following user\n\n  <pre>/last untappdUsername</pre> show last checked beer of user\n    ", {
-      parse_mode: 'HTML'
-    });
-  });
-  bot.onText(/\/follow (.*)/, (_ref, match) => {
+  bot.onText(/\/help/, (_ref) => {
     let {
+      chat,
       chat: {
         id
       }
     } = _ref;
-    const text = match[1].split(' ');
-    follow(id, text);
+    bot.notifyMe("\u0418\u043D\u0442\u0435\u0440\u0435\u0441\u0443\u0435\u0442\u0441\u044F \u0431\u043E\u0442\u043E\u043C: @".concat(chat.title || chat.username));
+    bot.sendMessage(id, "\n    commands:\n  <pre>/follow untappdUsername [telegramUsername]</pre> follow untappd user. If telegramUsername is specified, will tag this username on checkin!\n\n  <pre>/following</pre> display a list of following untappd users for this channel\n\n  <pre>/unfollow untappdUsername</pre> stop following user\n\n  <pre>/last untappdUsername</pre> show last checked beer of user\n    ", {
+      parse_mode: 'HTML'
+    });
   });
-  bot.onText(/\/last (.*)/, (_ref2, match) => {
+  bot.onText(/\/follow (.*)/, (_ref2, match) => {
     let {
+      chat,
       chat: {
         id
       }
     } = _ref2;
-    const username = match[1];
-    tap.checkLast(id, username);
+    const text = match[1].split(' ');
+    bot.notifyMe("\u041D\u043E\u0432\u044B\u0439 \u043F\u043E\u0434\u043F\u0438\u0441\u0447\u0438\u043A: @".concat(chat.title || chat.username, " \u043D\u0430 ").concat(text));
+    follow(id, text);
   });
-  bot.onText(/\/following/, (_ref3) => {
+  bot.onText(/\/last (.*)/, (_ref3, match) => {
     let {
       chat: {
         id
       }
     } = _ref3;
+    const username = match[1];
+    tap.checkLast(id, username);
+  });
+  bot.onText(/\/following/, (_ref4) => {
+    let {
+      chat: {
+        id
+      }
+    } = _ref4;
 
     _models.Follow.findAll({
       where: {
@@ -85,12 +93,12 @@ const botProcess = tap => {
       bot.sendMessage(id, list);
     });
   });
-  bot.onText(/\/unfollow (.*)/, (_ref4, match) => {
+  bot.onText(/\/unfollow (.*)/, (_ref5, match) => {
     let {
       chat: {
         id
       }
-    } = _ref4;
+    } = _ref5;
 
     _models.Follow.destroy({
       where: {
@@ -106,8 +114,8 @@ const botProcess = tap => {
     });
   });
 
-  const follow = async (id, _ref5) => {
-    let [tapUsername, tg] = _ref5;
+  const follow = async (id, _ref6) => {
+    let [tapUsername, tg] = _ref6;
 
     try {
       const url = "https://untappd.com/user/".concat(tapUsername);
@@ -134,9 +142,13 @@ const botProcess = tap => {
   }; // bot.sendMessage(-238934789, 'я же не яндех -.-')
 
 
-  bot.on('message', msg => {
-    console.log(msg);
+  bot.on('message', msg => {// console.log(msg)
   });
+
+  bot.notifyMe = text => {
+    bot.sendMessage(173126581, text);
+  };
+
   return bot;
 };
 
