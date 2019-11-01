@@ -23,7 +23,7 @@ module.exports = {
       ref  : 'origin/master',
       repo : 'git@github.com:Roman-Mzh/ggrecha.git',
       path : '/home/da/apps/ggrecha',
-      "post-deploy" : "cp ~/.env ./dist/.env && export NODE_ENV=production && pm2 startOrRestart ecosystem.config.js --env production",
+      "post-deploy" : "cp ~/.env ./.env && export NODE_ENV=production && pm2 startOrRestart ecosystem.config.js --env production",
       env  : {
         NODE_ENV  : 'production'
       }
