@@ -1,16 +1,20 @@
 # ggrecha
 telegram bot for untappd
 
-### quick start
+### help
 
-1. install packages `yarn`
 
-1. edit `example.env` file and rename it to `.env`
+`/follow untappdUsername [telegramUsername]`
+ follow untappd user. If telegramUsername is specified, will tag this username on checkin!
 
-2. configure [sequelize](https://sequelize.org/v5/ "sequelize") database if needed
+  
+`/following`
+ display a list of following untappd users for this channel
 
-3. create tables `npx sequelize-cli db:migrate`
+  
+`/unfollow untappdUsername`
+ stop following user
 
-4. start bot `yarn start`
-
-5. ask bot for `/help`
+  
+`/last untappdUsername`
+ show last checked beer of user
