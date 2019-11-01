@@ -22,6 +22,26 @@ var _models = require("./models");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class Tap {
+  constructor() {
+    this.start();
+  }
+
+  start() {
+    this.worker = setInterval(() => {
+      this.syncAll();
+      this.notifyAll();
+    }, 120000);
+    return this.worker;
+  }
+
+  stop() {
+    if (this.isOnline) clearInterval(this.worker);
+  }
+
+  isOnline() {
+    return !!this.worker;
+  }
+
   async syncAll() {
     _models.Follow.findAll().then(follows => {
       const parses = new Set(follows.map(e => e.tapUsername));

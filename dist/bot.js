@@ -21,8 +21,6 @@ var _dotenv = _interopRequireDefault(require("dotenv"));
 
 var _models = require("./models");
 
-var _index = require("./index");
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -33,111 +31,113 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 _dotenv.default.config();
 
-const bot = new _nodeTelegramBotApi.default(process.env.TG_TOKEN, {
-  polling: true,
-  request: {
-    agentClass: _Agent.default,
-    agentOptions: {
-      socksHost: process.env.SOCKS_HOST,
-      socksPort: process.env.SOCKS_PORT,
-      socksUsername: process.env.SOCKS_USER,
-      socksPassword: process.env.SOCKS_PASS
-    }
-  }
-});
-bot.onText(/\/help/, msg => {
-  const chatId = msg.chat.id;
-  bot.sendMessage(chatId, "\n  commands:\n<pre>/follow untappdUsername [telegramUsername]</pre> follow untappd user. If telegramUsername is specified, will tag this username on checkin!\n\n<pre>/following</pre> display a list of following untappd users for this channel\n\n<pre>/unfollow untappdUsername</pre> stop following user\n\n<pre>/last untappdUsername</pre> show last checked beer of user\n  ", {
-    parse_mode: 'HTML'
-  });
-});
-bot.onText(/\/follow (.*)/, (_ref, match) => {
-  let {
-    chat: {
-      id
-    }
-  } = _ref;
-  const text = match[1].split(' ');
-  follow(id, text);
-});
-bot.onText(/\/last (.*)/, (_ref2, match) => {
-  let {
-    chat: {
-      id
-    }
-  } = _ref2;
-  const username = match[1];
-
-  _index.tap.checkLast(id, username);
-});
-bot.onText(/\/following/, (_ref3) => {
-  let {
-    chat: {
-      id
-    }
-  } = _ref3;
-
-  _models.Follow.findAll({
-    where: {
-      chatId: id
-    }
-  }).then(followings => {
-    const list = followings.length ? followings.map(e => "".concat(e.tapUsername, " (").concat(e.tgUsername || '-', ")")).join(', ') : 'кажется, подписок нет. возможно, нужно подписаться на zhigulevskoe?';
-    bot.sendMessage(id, list);
-  });
-});
-bot.onText(/\/unfollow (.*)/, (_ref4, match) => {
-  let {
-    chat: {
-      id
-    }
-  } = _ref4;
-
-  _models.Follow.destroy({
-    where: {
-      chatId: id,
-      tapUsername: match[1]
-    }
-  }).then(res => {
-    if (!res) {
-      bot.sendMessage(id, "\u043A\u0430\u0436\u0435\u0442\u0441\u044F, \u044F \u043D\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u0430\u043D \u043D\u0430 ".concat(match[1]));
-    } else {
-      bot.sendMessage(id, "".concat(match[1], " \u043D\u0430\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0435 \u0438\u043D\u0442\u0435\u0440\u0435\u0441\u0435\u043D. \u0436\u0430\u043B\u044C."));
+const botProcess = tap => {
+  const bot = new _nodeTelegramBotApi.default(process.env.TG_TOKEN, {
+    polling: true,
+    request: {
+      agentClass: _Agent.default,
+      agentOptions: {
+        socksHost: process.env.SOCKS_HOST,
+        socksPort: process.env.SOCKS_PORT,
+        socksUsername: process.env.SOCKS_USER,
+        socksPassword: process.env.SOCKS_PASS
+      }
     }
   });
-});
-
-const follow = async (id, _ref5) => {
-  let [tapUsername, tg] = _ref5;
-
-  try {
-    const url = "https://untappd.com/user/".concat(tapUsername);
-    const res = await (0, _nodeFetch.default)(url);
-    if (res.status === 404) throw "\u0412\u043E\u0442 \u044D\u0442\u043E \u043F\u043E\u0432\u043E\u0440\u043E\u0442! \u0412 \u0442\u0430\u043F\u043A\u0435 \u043D\u0435\u0442 \u044E\u0437\u0435\u0440\u0430 ".concat(tapUsername);
-    const followObj = {
-      chatId: id,
-      tapUsername: tapUsername
-    };
-    const f = await _models.Follow.findAll({
-      where: followObj
+  bot.onText(/\/help/, msg => {
+    const chatId = msg.chat.id;
+    bot.sendMessage(chatId, "\n    commands:\n  <pre>/follow untappdUsername [telegramUsername]</pre> follow untappd user. If telegramUsername is specified, will tag this username on checkin!\n\n  <pre>/following</pre> display a list of following untappd users for this channel\n\n  <pre>/unfollow untappdUsername</pre> stop following user\n\n  <pre>/last untappdUsername</pre> show last checked beer of user\n    ", {
+      parse_mode: 'HTML'
     });
-    if (!!f.length) throw "\u044F \u0443\u0436\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u0430\u043D \u043D\u0430 \u043A\u043E\u043C\u0440\u0430\u0434\u0430 ".concat(tapUsername, " \u0432 \u044D\u0442\u043E\u043C \u0447\u0430\u0442\u0438");
+  });
+  bot.onText(/\/follow (.*)/, (_ref, match) => {
+    let {
+      chat: {
+        id
+      }
+    } = _ref;
+    const text = match[1].split(' ');
+    follow(id, text);
+  });
+  bot.onText(/\/last (.*)/, (_ref2, match) => {
+    let {
+      chat: {
+        id
+      }
+    } = _ref2;
+    const username = match[1];
+    tap.checkLast(id, username);
+  });
+  bot.onText(/\/following/, (_ref3) => {
+    let {
+      chat: {
+        id
+      }
+    } = _ref3;
 
-    _models.Follow.create(_objectSpread({}, followObj, {
-      tgUsername: tg
-    }));
+    _models.Follow.findAll({
+      where: {
+        chatId: id
+      }
+    }).then(followings => {
+      const list = followings.length ? followings.map(e => "".concat(e.tapUsername, " (").concat(e.tgUsername || '-', ")")).join(', ') : 'кажется, подписок нет. возможно, нужно подписаться на zhigulevskoe?';
+      bot.sendMessage(id, list);
+    });
+  });
+  bot.onText(/\/unfollow (.*)/, (_ref4, match) => {
+    let {
+      chat: {
+        id
+      }
+    } = _ref4;
 
-    _index.tap.syncOne(tapUsername);
+    _models.Follow.destroy({
+      where: {
+        chatId: id,
+        tapUsername: match[1]
+      }
+    }).then(res => {
+      if (!res) {
+        bot.sendMessage(id, "\u043A\u0430\u0436\u0435\u0442\u0441\u044F, \u044F \u043D\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u0430\u043D \u043D\u0430 ".concat(match[1]));
+      } else {
+        bot.sendMessage(id, "".concat(match[1], " \u043D\u0430\u043C \u0431\u043E\u043B\u044C\u0448\u0435 \u043D\u0435 \u0438\u043D\u0442\u0435\u0440\u0435\u0441\u0435\u043D. \u0436\u0430\u043B\u044C."));
+      }
+    });
+  });
 
-    bot.sendMessage(id, "\u043E\u0442\u043B\u0438\u0447\u043D\u043E! \u0436\u0434\u0451\u043C, \u043F\u043E\u043A\u0430 ".concat(tapUsername, " \u0437\u0430\u0447\u0435\u043A\u0438\u043D\u0438\u0442 \u043F\u0438\u0432\u043E!"));
-  } catch (e) {
-    bot.sendMessage(id, e);
-  }
-}; // bot.sendMessage(-238934789, 'я же не яндех -.-')
+  const follow = async (id, _ref5) => {
+    let [tapUsername, tg] = _ref5;
+
+    try {
+      const url = "https://untappd.com/user/".concat(tapUsername);
+      const res = await (0, _nodeFetch.default)(url);
+      if (res.status === 404) throw "\u0412\u043E\u0442 \u044D\u0442\u043E \u043F\u043E\u0432\u043E\u0440\u043E\u0442! \u0412 \u0442\u0430\u043F\u043A\u0435 \u043D\u0435\u0442 \u044E\u0437\u0435\u0440\u0430 ".concat(tapUsername);
+      const followObj = {
+        chatId: id,
+        tapUsername: tapUsername
+      };
+      const f = await _models.Follow.findAll({
+        where: followObj
+      });
+      if (!!f.length) throw "\u044F \u0443\u0436\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u0430\u043D \u043D\u0430 \u043A\u043E\u043C\u0440\u0430\u0434\u0430 ".concat(tapUsername, " \u0432 \u044D\u0442\u043E\u043C \u0447\u0430\u0442\u0438");
+
+      _models.Follow.create(_objectSpread({}, followObj, {
+        tgUsername: tg
+      }));
+
+      tap.syncOne(tapUsername);
+      bot.sendMessage(id, "\u043E\u0442\u043B\u0438\u0447\u043D\u043E! \u0436\u0434\u0451\u043C, \u043F\u043E\u043A\u0430 ".concat(tapUsername, " \u0437\u0430\u0447\u0435\u043A\u0438\u043D\u0438\u0442 \u043F\u0438\u0432\u043E!"));
+    } catch (e) {
+      bot.sendMessage(id, e);
+    }
+  }; // bot.sendMessage(-238934789, 'я же не яндех -.-')
 
 
-bot.on('message', msg => {
-  console.log(msg);
-});
-var _default = bot;
+  bot.on('message', msg => {
+    console.log(msg);
+  });
+  return bot;
+};
+
+var _default = botProcess;
 exports.default = _default;
