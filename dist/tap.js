@@ -15,8 +15,6 @@ var _nodeFetch = _interopRequireDefault(require("node-fetch"));
 
 var _jsdom = _interopRequireDefault(require("jsdom"));
 
-var _bot = _interopRequireDefault(require("./bot"));
-
 var _models = require("./models");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -26,7 +24,8 @@ class Tap {
     this.start();
   }
 
-  start() {
+  start(bot) {
+    this.bot = bot;
     this.worker = setInterval(() => {
       this.syncAll();
       this.notifyAll();
@@ -62,10 +61,9 @@ class Tap {
 
     if (checkins.length) {
       const checkin = checkins[0];
-
-      _bot.default.sendMessage(id, checkin.last());
+      this.bot.sendMessage(id, checkin.last());
     } else {
-      _bot.default.sendMessage(id, "\u0423 ".concat(username, " \u043D\u0435\u0442 \u0447\u0435\u043A\u0438\u043D\u043E\u0432, \u0438\u043B\u0438 \u043D\u0430 \u043D\u0435\u0433\u043E \u043D\u0438\u043A\u0442\u043E \u043D\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u0430\u043D :("));
+      this.bot.sendMessage(id, "\u0423 ".concat(username, " \u043D\u0435\u0442 \u0447\u0435\u043A\u0438\u043D\u043E\u0432, \u0438\u043B\u0438 \u043D\u0430 \u043D\u0435\u0433\u043E \u043D\u0438\u043A\u0442\u043E \u043D\u0435 \u043F\u043E\u0434\u043F\u0438\u0441\u0430\u043D :("));
     }
   }
 
@@ -105,8 +103,8 @@ class Tap {
       isSent: true
     });
     chats.forEach(id => {
-      _bot.default.sendMessage(id, checkin.text(tgUsername)).then(() => {
-        _bot.default.sendMessage(id, "https://untappd.com/user/".concat(checkin.tapUsername, "/checkin/").concat(checkin.checkin_id));
+      this.bot.sendMessage(id, checkin.text(tgUsername)).then(() => {
+        this.bot.sendMessage(id, "https://untappd.com/user/".concat(checkin.tapUsername, "/checkin/").concat(checkin.checkin_id));
       });
     });
   }

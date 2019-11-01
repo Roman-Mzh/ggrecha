@@ -14,6 +14,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const app = () => {
   const tap = new _tap.default();
   const bot = (0, _bot.default)(tap);
+  tap.start(bot);
   return {
     tap,
     bot

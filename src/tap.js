@@ -1,8 +1,6 @@
 import moment from 'moment';
 import fetch from 'node-fetch';
 import jsdom from 'jsdom';
-
-import bot from './bot';
 import { Checkin, Follow } from './models';
 
 class Tap {
@@ -10,7 +8,8 @@ class Tap {
     this.start();
   }
 
-  start() {
+  start(bot) {
+    this.bot = bot;
     this.worker = setInterval(() => {
       this.syncAll();
       this.notifyAll();
@@ -44,9 +43,9 @@ class Tap {
     });
     if(checkins.length) {
       const checkin = checkins[0];
-      bot.sendMessage(id, checkin.last());
+      this.bot.sendMessage(id, checkin.last());
     } else {
-      bot.sendMessage(id, `У ${username} нет чекинов, или на него никто не подписан :(`);
+      this.bot.sendMessage(id, `У ${username} нет чекинов, или на него никто не подписан :(`);
     }
   }
 
@@ -74,9 +73,9 @@ class Tap {
     const tgUsername = follows[0].tgUsername;
     checkin.update({ isSent: true })
     chats.forEach((id) => {
-      bot.sendMessage(id, checkin.text(tgUsername))
+      this.bot.sendMessage(id, checkin.text(tgUsername))
         .then(() => {
-          bot.sendMessage(id, `https://untappd.com/user/${checkin.tapUsername}/checkin/${checkin.checkin_id}`)
+          this.bot.sendMessage(id, `https://untappd.com/user/${checkin.tapUsername}/checkin/${checkin.checkin_id}`)
         })
     })
   }
